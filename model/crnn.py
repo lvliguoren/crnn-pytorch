@@ -5,6 +5,7 @@ import torch.nn as nn
 class CRNN(nn.Module):
     def __init__(self, num_class):
         super(CRNN, self).__init__()
+
         self.cnn = nn.Sequential()
         self.cnn.add_module('conv0', nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1))
         self.cnn.add_module('pooling0', nn.MaxPool2d(kernel_size=2, stride=2))
@@ -24,13 +25,15 @@ class CRNN(nn.Module):
         self.rnn.add_module("lstm0", nn.LSTM(512, 256, bidirectional=True))
         self.rnn.add_module("lstm1", nn.LSTM(512, 256, bidirectional=True))
 
-        self.fc = nn.Linear(256*2, num_class)
+        self.fc = nn.Linear(256*2, num_class+1)
+        self.softmax = nn.LogSoftmax(dim=2)
 
     def forward(self, x):
         out = self.cnn(x)
         out = self.__map2seq(out)
         out = self.rnn(out)
         out = self.fc(out)
+        out = self.softmax(out)
 
         return out
 
