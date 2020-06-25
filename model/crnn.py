@@ -2,6 +2,22 @@ import torch
 import torch.nn as nn
 
 
+class BidirectionalLSTM(nn.Module):
+    def __init__(self, nIn, nHidden, nOut):
+        super(BidirectionalLSTM, self).__init__()
+
+        self.lstm = nn.LSTM(nIn, nHidden, bidirectional=True)
+        self.fc = nn.Linear(nHidden*2, nOut)
+
+    def forward(self, x):
+        out = self.rnn(x)
+        W, N, C = out.size()
+        out = out.view(W*N, C)
+        out = self.fc(out)
+        out = out.view(W, N, -1)
+
+        return out
+
 class CRNN(nn.Module):
     def __init__(self, num_class):
         super(CRNN, self).__init__()
@@ -22,17 +38,15 @@ class CRNN(nn.Module):
         self.cnn.add_module('conv7', nn.Conv2d(512, 512, kernel_size=2, stride=1, padding=0))
 
         self.rnn = nn.Sequential()
-        self.rnn.add_module("lstm0", nn.LSTM(512, 256, bidirectional=True))
-        self.rnn.add_module("lstm1", nn.LSTM(512, 256, bidirectional=True))
-
-        self.fc = nn.Linear(256*2, num_class+1)
+        self.rnn.add_module("lstm0", BidirectionalLSTM(512, 256, 256))
+        self.rnn.add_module("lstm1", BidirectionalLSTM(256, 256, num_class+1))
         self.softmax = nn.LogSoftmax(dim=2)
 
     def forward(self, x):
         out = self.cnn(x)
         out = self.__map2seq(out)
         out = self.rnn(out)
-        out = self.fc(out)
+
         out = self.softmax(out)
 
         return out
