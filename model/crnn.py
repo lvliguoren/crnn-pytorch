@@ -10,7 +10,7 @@ class BidirectionalLSTM(nn.Module):
         self.fc = nn.Linear(nHidden*2, nOut)
 
     def forward(self, x):
-        out = self.rnn(x)
+        out, _ = self.lstm(x)
         W, N, C = out.size()
         out = out.view(W*N, C)
         out = self.fc(out)
@@ -29,12 +29,12 @@ class CRNN(nn.Module):
         self.cnn.add_module('pooling1', nn.MaxPool2d(kernel_size=2, stride=2))
         self.cnn.add_module('conv3', nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1))
         self.cnn.add_module('conv4', nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1))
-        self.cnn.add_module('pooling2', nn.MaxPool2d(kernel_size=(1,2), stride=2))
+        self.cnn.add_module('pooling2', nn.MaxPool2d(kernel_size=(2,2), stride=(2,1)))
         self.cnn.add_module('conv5', nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1))
         self.cnn.add_module('batchnorm0', nn.BatchNorm2d(512))
         self.cnn.add_module('conv6', nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1))
         self.cnn.add_module('batchnorm1', nn.BatchNorm2d(512))
-        self.cnn.add_module('pooling3', nn.MaxPool2d(kernel_size=(1,2), stride=2))
+        self.cnn.add_module('pooling3', nn.MaxPool2d(kernel_size=(2,2), stride=(2,1)))
         self.cnn.add_module('conv7', nn.Conv2d(512, 512, kernel_size=2, stride=1, padding=0))
 
         self.rnn = nn.Sequential()
