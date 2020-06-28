@@ -51,7 +51,7 @@ def train():
             optimizer.step()
 
             if step % 50 == 0:
-                status = "step: {}, loss: {},".format(step, loss.item())
+                status = "step: {}, loss: {}".format(step, loss.item())
                 print(status)
                 writer.add_scalar("train_loss", loss.item(), step)
 
@@ -61,9 +61,9 @@ def train():
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = CRNN(num_class=len(char_dict)-1).to(device)
+model = CRNN(len(char_dict)-1).to(device)
 model.apply(weights_init)
-optimizer = optim.Adam(model.parameters(),lr=1e-6,betas=(0.5,0.99))
+optimizer = optim.Adam(model.parameters(),lr=1e-3)
 loss_func = nn.CTCLoss().to(device)
 
 if __name__ == '__main__':
