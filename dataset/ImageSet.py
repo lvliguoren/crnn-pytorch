@@ -14,7 +14,9 @@ def default_loader(path):
     img = cv2.resize(img, dsize=(math.floor(W * scale), 32), fx=1, fy=1)
     # 转为灰度图
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    return transforms.ToTensor()(img)
+    img = transforms.ToTensor()(img)
+    img = img.sub(0.5).div(0.5)
+    return img
 
 
 class CustomData(data.Dataset):
@@ -50,3 +52,11 @@ class CustomData(data.Dataset):
         label = self.labels[index]
 
         return img, label
+
+
+if __name__ == '__main__':
+    root = 'E:/TEST/Synthetic Chinese String Dataset/images'
+    img_name = '72687140_2765922188.jpg'
+    path = os.path.join(root,img_name)
+    cv2.imshow("test", default_loader(path))
+    cv2.waitKey()
