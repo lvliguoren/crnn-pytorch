@@ -2,12 +2,12 @@
 This software implements the Convolutional Recurrent Neural Network (CRNN) in pytorch
 #  Performance
 ## train loss
-![avatar](test_imgs/1.png)
+![train loss](test_imgs/1.png)
 ## test loss
-![avatar](test_imgs/2.png)
+![test loss](test_imgs/2.png)
 ## demo
-![avatar](test_imgs/20437093_2690788297.jpg)
-![avatar](test_imgs/3.png)
+![example image](test_imgs/20437093_2690788297.jpg)
+![result](test_imgs/3.png)
 # Dataset
 The dataset I used is Synthetic Chinese String Dataset, you can also use your own data
 1. Download the [dataset](https://pan.baidu.com/s/1ufYbnZAZ1q0AlK7yZ08cvQ) or your own data
