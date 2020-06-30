@@ -83,7 +83,7 @@ def val():
 def test():
     with open('dataset/txt/char_std_5990.txt', 'rb') as file:
         num_dict = {num: char.strip().decode('gbk', 'ignore') for num, char in enumerate(file.readlines())}
-    img = CustomData.get_file('test/20437093_2690788297.jpg')
+    img = CustomData.get_file('test_imgs/20437093_2690788297.jpg')
     img = img.to(device)
     model = torch.load('model/mycrnn.pth').to(device)
     model.eval()
