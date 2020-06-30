@@ -1,6 +1,6 @@
 #  Image-based Sequence Recognition
 This software implements the Convolutional Recurrent Neural Network (CRNN) in pytorch
-#  Performance
+#  Loss&Accuracy
 ## train loss
 ![train loss](test_imgs/1.png)
 ## test loss
