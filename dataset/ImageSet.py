@@ -29,17 +29,9 @@ class CustomData(data.Dataset):
         self.char_dict = char_dict
 
         if is_train:
-            with open('dataset/txt/train.txt', 'r') as file:
-                for line in file.readlines():
-                    self.img_name.append(line.split()[0])
-                    label = line.split()[1:]
-                    self.labels.append(','.join(label))
+            self.__getlabels('train.txt')
         else:
-            with open('dataset/txt/test.txt', 'r') as file:
-                for line in file.readlines():
-                    self.img_name.append(line.split()[0])
-                    label = line.split()[1:]
-                    self.labels.append(','.join(label))
+            self.__getlabels('test.txt')
 
 
     def __len__(self):
@@ -52,6 +44,16 @@ class CustomData(data.Dataset):
         label = self.labels[index]
 
         return img, label
+
+    def __getlabels(self, file_name):
+        with open('dataset/txt/'+ file_name, 'r', encoding='UTF-8') as file:
+            for line in file.readlines():
+                self.img_name.append(line.split()[0])
+                label = line.split()[1]
+                word_index = []
+                for word in label:
+                    word_index.append(str(self.char_dict[word]))
+                self.labels.append(','.join(word_index))
 
 
 if __name__ == '__main__':
