@@ -55,6 +55,13 @@ class CustomData(data.Dataset):
                     word_index.append(str(self.char_dict[word]))
                 self.labels.append(','.join(word_index))
 
+    @staticmethod
+    def get_file(file_path):
+        img = default_loader(file_path)
+        C, H, W = img.shape
+        img = img.view(1, C, H, W)
+        return img
+
 
 if __name__ == '__main__':
     root = 'E:/TEST/Synthetic Chinese String Dataset/images'

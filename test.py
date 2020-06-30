@@ -4,16 +4,7 @@ from dataset.ImageSet import CustomData
 from torch.utils.data import DataLoader
 
 
-with open('dataset/txt/char_std_5990.txt', 'rb') as file:
-    char_dict = {char.strip().decode('gbk', 'ignore'):num for num, char in enumerate(file.readlines())}
-
-test_data = CustomData('E:/TEST/Synthetic Chinese String Dataset/images', char_dict=char_dict, is_train=False)
-test_loader = DataLoader(dataset=test_data,
-                          batch_size=32,
-                          shuffle=True,)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-loss_func = nn.CTCLoss().to(device)
-
 
 def deduplication(pred_y):
     p_y = []
@@ -31,7 +22,14 @@ def deduplication(pred_y):
 
 
 def val():
+    with open('dataset/txt/char_std_5990.txt', 'rb') as file:
+        char_dict = {char.strip().decode('gbk', 'ignore'): num for num, char in enumerate(file.readlines())}
+    test_data = CustomData('E:/TEST/Synthetic Chinese String Dataset/images', char_dict=char_dict, is_train=False)
+    test_loader = DataLoader(dataset=test_data,
+                             batch_size=32,
+                             shuffle=True, )
     model = torch.load('model/mycrnn.pth').to(device)
+    loss_func = nn.CTCLoss().to(device)
 
     model.eval()
     n_word_correct = 0
@@ -82,5 +80,22 @@ def val():
     print('sequence accuracy:{}, word accuracy{}'.format(n_seq_correct/n_seq_total, n_word_correct/n_word_total))
 
 
+def test():
+    with open('dataset/txt/char_std_5990.txt', 'rb') as file:
+        num_dict = {num: char.strip().decode('gbk', 'ignore') for num, char in enumerate(file.readlines())}
+    img = CustomData.get_file('test/20437093_2690788297.jpg')
+    img = img.to(device)
+    model = torch.load('model/mycrnn.pth').to(device)
+    pred = model(img)
+    _, pred_y = pred.max(2)
+    pred_y = pred_y.permute(1, 0)
+    # pred_y = pred_y.view(-1)
+    p_y = deduplication(pred_y)
+    text = []
+    for word_idx in p_y[0].split(','):
+        text.append(num_dict[int(word_idx)])
+    print(''.join(text))
+
 if __name__ == '__main__':
     val()
+    # test()
