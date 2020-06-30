@@ -86,6 +86,7 @@ def test():
     img = CustomData.get_file('test/20437093_2690788297.jpg')
     img = img.to(device)
     model = torch.load('model/mycrnn.pth').to(device)
+    model.eval()
     pred = model(img)
     _, pred_y = pred.max(2)
     pred_y = pred_y.permute(1, 0)
